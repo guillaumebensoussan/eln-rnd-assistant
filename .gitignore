@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Secrets
+.env
+
+# Regenerable vector store (binary)
+artifacts/chroma/
+
+# Playwright MCP scratch
+.playwright-mcp/

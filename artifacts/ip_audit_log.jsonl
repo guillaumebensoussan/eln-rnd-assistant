@@ -1,0 +1,15 @@
+{"ts": "2026-05-29T16:22:00.966996+00:00", "operation": "demo", "redacted_count": 1, "redacted_names": ["IntermediateX-119"], "stayed_local": ["raw experiment record", "embeddings"], "chars_sent_to_cloud": 54}
+{"ts": "2026-05-29T16:25:15.775014+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:26:01.012382+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:26:58.294968+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:27:21.635182+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1389}
+{"ts": "2026-05-29T16:27:46.774499+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1389}
+{"ts": "2026-05-29T16:28:03.300464+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:28:07.059870+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1142}
+{"ts": "2026-05-29T16:28:29.962602+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:29:07.433771+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:30:03.588968+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:31:15.637357+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:32:26.520030+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1389}
+{"ts": "2026-05-29T16:33:29.666770+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1246}
+{"ts": "2026-05-29T16:33:37.936661+00:00", "operation": "report_generation", "redacted_count": 0, "redacted_names": [], "stayed_local": ["raw record", "embeddings", "inventory"], "chars_sent_to_cloud": 1389}

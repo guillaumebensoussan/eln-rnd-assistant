@@ -1,0 +1,3 @@
+Title: Palladium-Catalysed Cross-Coupling at Reduced Catalyst Loading
+Abstract: We report that Pd catalyst loadings as low as 1 mol% in toluene at 110 C afford cross-coupling yields above 85% when substrate purity exceeds 95%. Elevated pressure (3-4 bar) further improves conversion. THF and toluene outperform protic solvents.
+Keywords: palladium, cross-coupling, catalyst loading, yield optimisation.

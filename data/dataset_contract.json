@@ -1,0 +1,76 @@
+{
+  "version": "1.0",
+  "primary_key": "experiment_id",
+  "experiment_types": [
+    "synthesis",
+    "characterisation",
+    "formulation",
+    "qc"
+  ],
+  "columns": {
+    "experiment_id": "str",
+    "date": "str",
+    "operator": "str",
+    "experiment_type": "str",
+    "reagent_id": "str",
+    "temperature_c": "float64",
+    "time_h": "float64",
+    "catalyst_loading_molpct": "float64",
+    "pressure_bar": "float64",
+    "solvent": "str",
+    "purity_in_pct": "float64",
+    "yield_pct": "float64",
+    "purity_out_pct": "float64",
+    "qc_pass": "object",
+    "method": "str",
+    "crystallinity_pct": "float64",
+    "particle_size_nm": "float64",
+    "melting_point_c": "float64",
+    "component_a_ratio": "float64",
+    "component_b_ratio": "float64",
+    "stability_days": "float64",
+    "viscosity_cp": "float64",
+    "batch_number": "str",
+    "measured_purity_pct": "float64"
+  },
+  "constraints": {
+    "yield_pct": {
+      "min": 0,
+      "max": 100
+    },
+    "purity_out_pct": {
+      "min": 0,
+      "max": 100
+    },
+    "temperature_c": {
+      "min": -80,
+      "max": 300
+    },
+    "experiment_type": {
+      "allowed": [
+        "synthesis",
+        "characterisation",
+        "formulation",
+        "qc"
+      ]
+    }
+  },
+  "ml_targets": {
+    "regression": {
+      "target": "yield_pct",
+      "scope": "synthesis"
+    },
+    "classification": {
+      "target": "qc_pass",
+      "scope": "synthesis"
+    }
+  },
+  "required_features_for_ml": [
+    "temperature_c",
+    "time_h",
+    "catalyst_loading_molpct",
+    "pressure_bar",
+    "purity_in_pct",
+    "solvent"
+  ]
+}

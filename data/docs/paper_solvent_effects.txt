@@ -1,0 +1,3 @@
+Title: Solvent Effects on Reaction Yield in Organometallic Synthesis
+Abstract: A systematic study across THF, DCM, toluene, DMF and methanol shows aprotic solvents (THF, toluene, DMF) give higher yields than protic media. Optimal reaction time is near 8 hours; longer times reduce yield via decomposition.
+Keywords: solvent, yield, organometallic, reaction time.

@@ -1,0 +1,3 @@
+Title: Quality Control Thresholds for Pharmaceutical Intermediates
+Abstract: Batches with measured purity below 95% fail QC. Output purity correlates with input purity and yield. We recommend a 95% purity gate for downstream release.
+Keywords: quality control, purity, QC gate, release criteria.

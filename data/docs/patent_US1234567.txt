@@ -1,0 +1,2 @@
+Patent US1234567: Process for high-yield synthesis using proprietary intermediate.
+Claims: A method comprising reacting a substrate with a palladium catalyst at 100-150 C under 2-4 bar pressure in an aprotic solvent to obtain yields exceeding 80%. Prior art discloses loadings above 5 mol%; the present invention reduces loading to 1-2 mol%.
