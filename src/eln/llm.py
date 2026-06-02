@@ -1,4 +1,4 @@
-"""Config LLM partagée. Claude en cloud si clé dispo, sinon dégradation gracieuse."""
+"""Shared LLM config. Claude in the cloud if a key is available, otherwise graceful degradation."""
 
 from __future__ import annotations
 
@@ -12,7 +12,7 @@ def has_cloud() -> bool:
 
 
 def get_llm():
-    """Retourne un LLM CrewAI configuré sur Claude, ou None si pas de clé."""
+    """Return a CrewAI LLM configured for Claude, or None if no key is set."""
     if not has_cloud():
         return None
     from crewai import LLM

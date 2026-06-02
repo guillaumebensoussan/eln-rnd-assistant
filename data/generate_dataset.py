@@ -1,11 +1,11 @@
-"""Génère le dataset synthétique R&D de l'ELN.
+"""Generate the ELN synthetic R&D dataset.
 
-Déterministe (seed fixe) pour la reproductibilité exigée par le brief HUJI.
-Produit :
-  - data/inventory.csv        (~50 réactifs, avec tag ip_sensitive)
-  - data/clean_data.csv       (~200 expériences, 4 types)
+Deterministic (fixed seed) for the reproducibility required by the HUJI brief.
+Produces:
+  - data/inventory.csv        (~50 reagents, with an ip_sensitive tag)
+  - data/clean_data.csv       (~200 experiments, 4 types)
   - data/dataset_contract.json
-  - data/docs/*.txt           (papiers + brevets synthétiques pour le RAG)
+  - data/docs/*.txt           (synthetic papers + patents for the RAG)
 """
 
 from __future__ import annotations
@@ -31,7 +31,7 @@ def make_inventory(n: int = 50) -> pd.DataFrame:
     suppliers = ["Sigma-Aldrich", "Merck", "TCI", "Fisher", "Internal-Synth"]
     rows = []
     for i in range(n):
-        # ~30% de réactifs propriétaires (codes internes) => IP-sensitive
+        # ~30% proprietary reagents (internal codes) => IP-sensitive
         proprietary = rng.random() < 0.30
         if proprietary:
             name = f"IntermediateX-{rng.integers(100, 999)}"
@@ -56,11 +56,11 @@ def make_inventory(n: int = 50) -> pd.DataFrame:
 
 
 def make_experiments(inventory: pd.DataFrame, n: int = 200) -> pd.DataFrame:
-    """Génère des expériences ; le rendement des synthèses suit un modèle latent
-    (signal apprenable + bruit) pour que le bloc ML ait quelque chose à apprendre."""
+    """Generate experiments; synthesis yield follows a latent model
+    (learnable signal + noise) so the ML block has something to learn."""
     reagent_ids = inventory["reagent_id"].tolist()
     rows = []
-    # répartition : synthesis majoritaire pour nourrir le ML
+    # distribution: synthesis-heavy to feed the ML
     type_counts = {"synthesis": 120, "characterisation": 30, "formulation": 25, "qc": 25}
     eid = 0
     for etype, count in type_counts.items():
@@ -81,7 +81,7 @@ def make_experiments(inventory: pd.DataFrame, n: int = 200) -> pd.DataFrame:
                 purity_in = float(rng.uniform(85, 99.9))
                 solvent = str(rng.choice(SOLVENTS))
                 solvent_bonus = {"THF": 4, "toluene": 6, "DMF": 3}.get(solvent, 0)
-                # modèle latent du rendement
+                # latent yield model
                 yield_pct = (
                     35
                     + 0.18 * temp
@@ -140,7 +140,7 @@ def make_experiments(inventory: pd.DataFrame, n: int = 200) -> pd.DataFrame:
 
 
 def make_contract(experiments: pd.DataFrame) -> dict:
-    """Dataset contract : schéma, types, contraintes — consommé par le Flow pour valider."""
+    """Dataset contract: schema, types, constraints — consumed by the Flow for validation."""
     return {
         "version": "1.0",
         "primary_key": "experiment_id",

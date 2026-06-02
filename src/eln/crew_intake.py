@@ -1,8 +1,8 @@
-"""Crew 1 — Lab Intake & Knowledge (≈ "Data Analyst Crew" du brief HUJI).
+"""Crew 1 — Lab Intake & Knowledge (≈ the "Data Analyst Crew" in the HUJI brief).
 
-Trois agents : Intake/Structuring, Inventory, Retrieval (RAG).
-Les agents sont définis avec rôles/objectifs/outils. Ils utilisent Claude si une clé
-est présente ; sinon le Flow exploite directement les outils déterministes sous-jacents.
+Three agents: Intake/Structuring, Inventory, Retrieval (RAG).
+The agents are defined with roles/goals/tools. They use Claude when a key is present;
+otherwise the Flow calls the underlying deterministic tools directly.
 """
 
 from __future__ import annotations

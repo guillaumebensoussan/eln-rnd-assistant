@@ -1,4 +1,4 @@
-"""Tests ELN : eval RAG, échec gracieux du Flow, sanitizer, ML."""
+"""ELN tests: RAG eval, Flow graceful failure, sanitizer, ML."""
 
 from __future__ import annotations
 
@@ -16,7 +16,7 @@ from eln.rag import RAG
 from eln.sanitizer import Sanitizer
 from eln.tools import parse_experiment, predict_outcome
 
-# Jeu de référence : question -> doc_id attendu en tête de recherche
+# Golden set: question -> doc_id expected at the top of the search results
 RAG_GOLDEN = [
     ("which solvent gives the highest yield?", "paper_solvent_effects"),
     ("what is the QC purity threshold?", "paper_qc_purity"),
@@ -60,12 +60,12 @@ def test_flow_happy_path():
 
 
 def test_flow_fails_gracefully_on_missing_features(monkeypatch):
-    # simule un intake défaillant : features requises manquantes
+    # simulate a failing intake: required features missing
     monkeypatch.setattr(flow_mod, "parse_experiment", lambda t: {"solvent": "THF"})
     state = run("garbage input")
     assert state.errors, "expected validation errors"
     assert "FLOW HALTED" in state.report
-    assert not state.prediction  # Crew 2 ne doit pas tourner
+    assert not state.prediction  # Crew 2 must not run
 
 
 def test_sanitizer_redacts_ip_sensitive():

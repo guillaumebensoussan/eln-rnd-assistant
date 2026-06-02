@@ -1,11 +1,11 @@
-"""RAG local — ChromaDB + embeddings locaux.
+"""Local RAG — ChromaDB + local embeddings.
 
-Indexe les expériences + les documents (papiers/brevets) dans une base vectorielle
-persistante locale. Les embeddings sont calculés sur la machine : les données brutes
-ne quittent jamais le poste (pilier IP-safe).
+Indexes experiments + documents (papers/patents) in a persistent local vector store.
+Embeddings are computed on the machine: raw data never leaves the workstation
+(IP-safe pillar).
 
-Embeddings : Ollama `nomic-embed-text` si disponible, sinon embedder local intégré
-de Chroma (all-MiniLM, onnx) — aucun appel réseau dans les deux cas.
+Embeddings: Ollama `nomic-embed-text` if available, otherwise Chroma's built-in local
+embedder (all-MiniLM, onnx) — no network call in either case.
 """
 
 from __future__ import annotations
@@ -24,7 +24,7 @@ COLLECTION = "eln"
 
 
 def _embedding_fn():
-    """Tente Ollama local, sinon retombe sur l'embedder local de Chroma."""
+    """Try local Ollama, otherwise fall back to Chroma's local embedder."""
     try:
         import ollama  # noqa: F401
 
@@ -48,7 +48,7 @@ class RAG:
 
     def index(self) -> int:
         docs, ids, metas = [], [], []
-        # expériences
+        # experiments
         df = pd.read_csv(DATA_DIR / "clean_data.csv")
         for _, r in df.iterrows():
             text = "; ".join(f"{k}={v}" for k, v in r.items() if pd.notna(v))
@@ -60,7 +60,7 @@ class RAG:
             docs.append(p.read_text(encoding="utf-8"))
             ids.append(p.stem)
             metas.append({"kind": "patent" if "patent" in p.stem else "paper", "type": "document"})
-        # upsert idempotent
+        # idempotent upsert
         self.col.upsert(documents=docs, ids=ids, metadatas=metas)
         return len(docs)
 

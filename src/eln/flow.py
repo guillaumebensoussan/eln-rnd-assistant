@@ -1,11 +1,11 @@
-"""Flow CrewAI — orchestration ELN de bout en bout.
+"""CrewAI Flow — end-to-end ELN orchestration.
 
-Handoff Crew 1 (Intake & Knowledge) -> Crew 2 (Analytics & Reporting), avec :
-- validation du dataset_contract et des features requises avant modélisation,
-- étapes déterministes + logging clair,
-- échec gracieux (le Flow s'arrête proprement et journalise au lieu de crasher).
+Handoff from Crew 1 (Intake & Knowledge) -> Crew 2 (Analytics & Reporting), with:
+- validation of the dataset_contract and the required features before modelling,
+- deterministic steps + clear logging,
+- graceful failure (the Flow stops cleanly and logs instead of crashing).
 
-Usage : `python -m eln.flow --demo`
+Usage: `python -m eln.flow --demo`
 """
 
 from __future__ import annotations
@@ -117,7 +117,7 @@ def run(text: str, question: str = "") -> ELNState:
     flow = ELNFlow()
     flow.kickoff(inputs={"text": text, "question": question})
     s = flow.state
-    # matérialise un snapshot détaché du StateProxy (lecture fiable hors du Flow)
+    # materialise a snapshot detached from the StateProxy (reliable read outside the Flow)
     return ELNState(
         text=s.text,
         question=s.question,

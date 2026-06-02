@@ -1,6 +1,6 @@
-"""Point d'entrée CLI : `python -m eln --demo`.
+"""CLI entry point: `python -m eln --demo`.
 
-Importe `run` depuis le package (un seul exemplaire du module, pas de double-import).
+Imports `run` from the package (a single copy of the module, no double-import).
 """
 
 from __future__ import annotations

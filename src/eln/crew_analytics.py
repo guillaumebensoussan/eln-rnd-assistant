@@ -1,6 +1,6 @@
-"""Crew 2 — Analytics & Reporting (≈ "Data Scientist Crew" du brief HUJI).
+"""Crew 2 — Analytics & Reporting (≈ the "Data Scientist Crew" in the HUJI brief).
 
-Trois agents : Prediction (scikit-learn), Synthesis/Report (Claude), IP-Audit.
+Three agents: Prediction (scikit-learn), Synthesis/Report (Claude), IP-Audit.
 """
 
 from __future__ import annotations
@@ -46,7 +46,7 @@ def audit_agent() -> Agent:
 
 
 def write_report(sanitised_context: str, prediction: dict) -> str:
-    """Rédige le rapport. Claude si dispo, sinon template déterministe (dégradation gracieuse)."""
+    """Write the report. Claude if available, otherwise a deterministic template (graceful degradation)."""
     if has_cloud():
         agent = report_agent()
         task = Task(

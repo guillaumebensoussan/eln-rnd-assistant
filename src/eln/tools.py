@@ -1,7 +1,7 @@
-"""Outils déterministes partagés par les agents et le Flow.
+"""Deterministic tools shared by the agents and the Flow.
 
-Chaque fonction est utilisable (a) directement par le Flow pour un pipeline reproductible,
-et (b) exposée comme outil CrewAI (`@tool`) aux agents.
+Each function can be used (a) directly by the Flow for a reproducible pipeline,
+and (b) exposed as a CrewAI tool (`@tool`) to the agents.
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ _SOLVENTS = ["THF", "DCM", "toluene", "methanol", "DMF", "water", "acetonitrile"
 
 
 def parse_experiment(text: str) -> dict:
-    """Structure une entrée d'expérience en langage naturel -> record."""
+    """Structure a natural-language experiment entry -> record."""
     def grab(pattern, default=None, cast=float):
         m = re.search(pattern, text, re.IGNORECASE)
         return cast(m.group(1)) if m else default
@@ -41,7 +41,7 @@ def parse_experiment(text: str) -> dict:
 
 
 def predict_outcome(record: dict) -> dict:
-    """Prédit rendement + QC pass via le modèle scikit-learn entraîné."""
+    """Predict yield + QC pass using the trained scikit-learn model."""
     if not MODEL_PATH.exists():
         return {"error": "model not trained — run ml/train.py first"}
     bundle = joblib.load(MODEL_PATH)
@@ -52,7 +52,7 @@ def predict_outcome(record: dict) -> dict:
     return {"predicted_yield_pct": round(yield_pred, 2), "predicted_qc_pass": qc_pred}
 
 
-# --- versions outils CrewAI (pour les agents) ---
+# --- CrewAI tool versions (for the agents) ---
 
 @tool("parse_experiment")
 def parse_experiment_tool(text: str) -> dict:

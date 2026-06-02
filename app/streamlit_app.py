@@ -1,4 +1,4 @@
-"""ELN agentique — interface Streamlit (UI labo)."""
+"""Agentic ELN — Streamlit interface (lab UI)."""
 
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ from eln.sanitizer import read_audit
 st.set_page_config(page_title="Agentic ELN", layout="wide")
 st.title("Agentic ELN — IP-safe R&D Lab Notebook")
 st.caption(
-    ("Cloud LLM: Claude (clé détectée)" if has_cloud() else "Mode local (pas de clé API — report en fallback)")
+    ("Cloud LLM: Claude (key detected)" if has_cloud() else "Local mode (no API key — report falls back to template)")
 )
 
 tab_log, tab_inv, tab_audit, tab_hist = st.tabs(

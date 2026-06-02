@@ -1,4 +1,4 @@
-"""Module inventaire — déductions de stock et alertes (Pandas)."""
+"""Inventory module — stock deductions and alerts (Pandas)."""
 
 from __future__ import annotations
 

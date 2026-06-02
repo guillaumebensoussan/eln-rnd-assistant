@@ -1,12 +1,12 @@
-"""Bloc ML — comble le volet prédictif (Crew 2 "Data Scientist") du brief HUJI.
+"""ML block — covers the predictive part (Crew 2 "Data Scientist") of the HUJI brief.
 
 - EDA -> artifacts/eda_report.html
 - Feature engineering -> data/features.csv
-- Régression yield_pct : LinearRegression vs RandomForest (>= 2 variantes)
-- Classification qc_pass : LogisticRegression vs RandomForest
-- Artefacts : artifacts/model.pkl, artifacts/evaluation_report.md, artifacts/model_card.md
+- yield_pct regression: LinearRegression vs RandomForest (>= 2 variants)
+- qc_pass classification: LogisticRegression vs RandomForest
+- Artifacts: artifacts/model.pkl, artifacts/evaluation_report.md, artifacts/model_card.md
 
-Déterministe (random_state fixe) pour la reproductibilité.
+Deterministic (fixed random_state) for reproducibility.
 """
 
 from __future__ import annotations
@@ -90,13 +90,13 @@ def train() -> None:
         X, y_reg, y_clf, test_size=0.25, random_state=RANDOM_STATE
     )
 
-    # features.csv (jeu transformé exporté pour traçabilité)
+    # features.csv (transformed set exported for traceability)
     feat_out = X.copy()
     feat_out[REG_TARGET] = y_reg
     feat_out[CLF_TARGET] = y_clf
     feat_out.to_csv(DATA_DIR / "features.csv", index=False)
 
-    # --- Régression : 2 variantes ---
+    # --- Regression: 2 variants ---
     reg_models = {
         "LinearRegression": Pipeline([("prep", make_preprocessor()), ("m", LinearRegression())]),
         "RandomForestRegressor": Pipeline(
@@ -112,7 +112,7 @@ def train() -> None:
             "mae": round(float(mean_absolute_error(yr_te, pred)), 4),
         }
 
-    # --- Classification : 2 variantes ---
+    # --- Classification: 2 variants ---
     clf_models = {
         "LogisticRegression": Pipeline([("prep", make_preprocessor()), ("m", LogisticRegression(max_iter=1000))]),
         "RandomForestClassifier": Pipeline(
@@ -131,7 +131,7 @@ def train() -> None:
     best_reg = max(reg_results, key=lambda k: reg_results[k]["r2"])
     best_clf = max(clf_results, key=lambda k: clf_results[k]["f1"])
 
-    # On persiste le meilleur de chaque tâche
+    # Persist the best of each task
     bundle = {
         "regressor": reg_models[best_reg],
         "classifier": clf_models[best_clf],

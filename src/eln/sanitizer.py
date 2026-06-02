@@ -1,8 +1,8 @@
-"""Sanitizer IP-safe + audit log — le cœur du pitch "données labo restent locales".
+"""IP-safe sanitizer + audit log — the heart of the "lab data stays local" pitch.
 
-Avant tout appel au LLM cloud (Claude), on remplace les noms de réactifs taggés
-`ip_sensitive` par des alias stables (IntermediateX-123 -> REAGENT_A1). L'audit log
-journalise, pour chaque opération, ce qui est resté local vs parti au cloud.
+Before any cloud LLM call (Claude), reagent names tagged `ip_sensitive` are replaced
+with stable aliases (IntermediateX-123 -> REAGENT_A1). The audit log records, for each
+operation, what stayed local vs what was sent to the cloud.
 """
 
 from __future__ import annotations
@@ -20,19 +20,19 @@ AUDIT_LOG = ROOT / "artifacts" / "ip_audit_log.jsonl"
 
 
 class Sanitizer:
-    """Construit une table d'alias depuis l'inventaire et scrub le texte sortant."""
+    """Builds an alias table from the inventory and scrubs outgoing text."""
 
     def __init__(self, inventory_csv: Path | None = None):
         inv = pd.read_csv(inventory_csv or DATA_DIR / "inventory.csv")
         sensitive = inv[inv["ip_sensitive"]]["name"].tolist()
-        # alias déterministe et stable
+        # deterministic, stable alias
         self.alias_map = {name: f"REAGENT_{chr(65 + i // 10)}{i % 10}" for i, name in enumerate(sorted(sensitive))}
-        # regex compilée, plus longs noms d'abord pour éviter les chevauchements
+        # compiled regex, longest names first to avoid overlaps
         names = sorted(self.alias_map, key=len, reverse=True)
         self._pattern = re.compile("|".join(re.escape(n) for n in names)) if names else None
 
     def scrub(self, text: str) -> tuple[str, list[str]]:
-        """Retourne (texte_assaini, liste_des_noms_caviardés)."""
+        """Return (sanitised_text, list_of_redacted_names)."""
         if not self._pattern:
             return text, []
         redacted: list[str] = []
@@ -46,7 +46,7 @@ class Sanitizer:
 
 
 def audit(operation: str, sent_to_cloud: str, redacted: list[str], stayed_local: list[str]) -> None:
-    """Append-only audit log : preuve de ce qui a quitté la machine."""
+    """Append-only audit log: evidence of what left the machine."""
     AUDIT_LOG.parent.mkdir(exist_ok=True)
     entry = {
         "ts": datetime.now(timezone.utc).isoformat(),
