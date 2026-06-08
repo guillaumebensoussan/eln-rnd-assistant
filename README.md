@@ -30,10 +30,28 @@ The Flow (`src/eln/flow.py`) chains the steps **deterministically**, **validates
 | CrewAI | Orchestrates the 6 agents + Flow (handoff, validation, graceful failure) |
 | scikit-learn | `yield_pct` regression (LinearRegression vs RandomForest) + `qc_pass` classification |
 | ChromaDB + local embeddings | RAG over experiments + papers/patents, **no raw data to the cloud** |
+| PubChem + local rule engine | SDS hazards (GHS) + curated reactivity rules → compatibility, mixing order, IP-safe |
 | Claude API | Complex reasoning (report) — sanitised context only |
 | Pandas | Dataset, inventory, stock deductions |
 | Streamlit | Lab UI: entry, inventory dashboard, audit log, history |
 | uv / Git+GitHub | Environment + versioning (Pull Request workflow) |
+
+## Safety check (SDS / compatibility)
+
+Given a set of reagents, the safety layer returns GHS hazards (from PubChem, cached
+locally), pairwise incompatibilities, the recommended mixing order, and procedural
+warnings (e.g. *add acid to water, never the reverse*). Hazard data comes from PubChem;
+the incompatibility and ordering **logic is a deterministic local rule engine**
+(`data/reactivity_rules.json`) — the LLM only phrases the result, it never decides a
+hazard. Safety **never blocks** an experiment: critical findings raise a prominent alert
+plus an acknowledgement (the chemist decides). IP-sensitive reagents are never sent to
+PubChem and are redacted before any cloud call.
+
+Run it from the **Safety check** tab, or programmatically:
+
+```bash
+PYTHONPATH=src uv run python -c "from eln.safety import check_safety; r=check_safety(['Hydrochloric acid','Sodium hydroxide']); print(r.severity, r.incompatibilities)"
+```
 
 ## Installation
 
