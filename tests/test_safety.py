@@ -85,3 +85,40 @@ def test_parse_ghs_view_extracts_codes_and_pictograms():
     assert parsed["signal_word"] == "Danger"
     assert parsed["ghs_pictograms"] == ["Corrosive"]
     assert parsed["h_codes"] == ["H314", "H290"]
+
+
+from eln.safety import check_safety, SafetyReport
+
+
+def _checker_kwargs():
+    # use the offline test fixture cache so tests never hit the network
+    from eln.safety.pubchem import PubChemClient
+    return {"client": PubChemClient(cache_path=FIXTURE_CACHE, allow_network=False)}
+
+
+def test_check_safety_flags_acid_base_critical():
+    # HCl (cached) vs a synthetic base via override; use real cache in data/ for NaOH
+    from eln.safety.pubchem import PubChemClient
+    client = PubChemClient(allow_network=False)  # data/sds_cache.json
+    report = check_safety(["Hydrochloric acid", "Sodium hydroxide"],
+                          inventory_csv=ROOT / "data" / "inventory.csv", client=client)
+    assert isinstance(report, SafetyReport)
+    assert report.severity == "critical"
+    assert any(inc.severity == "critical" for inc in report.incompatibilities)
+
+
+def test_check_safety_unknown_reagent_listed():
+    from eln.safety.pubchem import PubChemClient
+    client = PubChemClient(allow_network=False)
+    report = check_safety(["IntermediateX-999-not-real"],
+                          inventory_csv=ROOT / "data" / "inventory.csv", client=client)
+    assert report.unknowns  # unresolved reagent surfaced, no crash
+
+
+def test_check_safety_acid_water_order_warning():
+    from eln.safety.pubchem import PubChemClient
+    client = PubChemClient(allow_network=False)
+    report = check_safety(["Hydrochloric acid", "Water"],
+                          inventory_csv=ROOT / "data" / "inventory.csv", client=client)
+    joined = " ".join(report.procedural_warnings).lower()
+    assert "add the acid to the water" in joined
