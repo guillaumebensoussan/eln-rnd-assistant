@@ -1,51 +1,25 @@
 reagent_id,name,cas,supplier,batch,quantity_g,expiry,location,ip_sensitive
-R000,Reagent-A0,4416-48-7,TCI,B1773,51.6,2027-09-29,Shelf-6,False
-R001,Reagent-B1,7188-79-5,Fisher,B2152,227.9,2027-04-11,Shelf-5,False
-R002,Reagent-C2,6455-45-7,Fisher,B5908,117.5,2027-02-20,Shelf-2,False
-R003,IntermediateX-598,8589-83-3,Internal-Synth,B6684,380.3,2027-10-02,Shelf-4,True
-R004,Reagent-E4,8935-70-7,Merck,B7838,236.0,2026-07-19,Shelf-6,False
-R005,IntermediateX-139,7445-70-8,Internal-Synth,B7702,483.9,2027-01-23,Shelf-4,True
-R006,Reagent-G6,4721-80-2,Sigma-Aldrich,B5166,240.5,2026-05-24,Shelf-4,False
-R007,Reagent-H7,9405-48-2,Sigma-Aldrich,B8493,351.6,2026-04-25,Shelf-4,False
-R008,Reagent-I8,8056-84-4,Merck,B9081,342.8,2026-10-08,Shelf-8,False
-R009,IntermediateX-225,8057-10-7,Internal-Synth,B8081,334.1,2027-03-17,Shelf-8,True
-R010,Reagent-K10,4615-54-5,TCI,B1335,61.7,2026-06-01,Shelf-5,False
-R011,Reagent-L11,8557-60-1,TCI,B7884,319.2,2027-06-06,Shelf-7,False
-R012,Reagent-M12,3073-63-1,Fisher,B4127,111.2,2027-02-14,Shelf-4,False
-R013,Reagent-N13,395-30-7,Merck,B1524,144.3,2028-04-08,Shelf-4,False
-R014,Reagent-O14,5591-54-7,Sigma-Aldrich,B9963,206.2,2027-08-31,Shelf-5,False
-R015,IntermediateX-831,3375-12-1,Internal-Synth,B1810,362.6,2027-09-29,Shelf-6,True
-R016,IntermediateX-909,5034-93-2,Internal-Synth,B5475,225.8,2027-09-28,Shelf-2,True
-R017,Reagent-R17,6852-66-5,Merck,B4255,48.4,2026-11-25,Shelf-2,False
-R018,Reagent-S18,9089-54-6,Merck,B5116,484.7,2026-09-19,Shelf-3,False
-R019,Reagent-T19,7899-49-6,Fisher,B3449,52.7,2027-02-23,Shelf-10,False
-R020,Reagent-U20,2063-74-3,TCI,B8277,92.5,2027-06-18,Shelf-6,False
-R021,Reagent-V21,4952-74-6,Fisher,B4888,315.5,2026-06-01,Shelf-7,False
-R022,Reagent-W22,890-77-4,TCI,B8081,249.5,2026-03-08,Shelf-3,False
-R023,IntermediateX-396,6792-19-2,Internal-Synth,B6288,89.4,2026-10-18,Shelf-11,True
-R024,Reagent-Y24,3501-64-5,Merck,B3652,479.5,2026-02-19,Shelf-5,False
-R025,Reagent-Z25,696-17-3,Merck,B5379,247.9,2027-02-18,Shelf-11,False
-R026,Reagent-A26,4760-81-3,TCI,B9583,262.7,2026-11-15,Shelf-10,False
-R027,IntermediateX-494,3668-83-1,Internal-Synth,B9064,74.4,2026-10-20,Shelf-7,True
-R028,IntermediateX-698,6738-20-3,Internal-Synth,B3194,364.9,2027-08-27,Shelf-11,True
-R029,IntermediateX-791,6165-91-8,Internal-Synth,B3071,23.5,2026-06-02,Shelf-7,True
-R030,Reagent-E30,8305-50-7,Merck,B9667,476.7,2026-11-02,Shelf-7,False
-R031,Reagent-F31,9059-32-8,Merck,B9423,86.5,2027-05-09,Shelf-1,False
-R032,Reagent-G32,9923-23-8,Fisher,B1818,445.9,2027-11-13,Shelf-3,False
-R033,Reagent-H33,4721-38-1,Fisher,B7947,332.5,2027-01-22,Shelf-5,False
-R034,IntermediateX-762,7479-43-3,Internal-Synth,B1047,124.3,2028-04-25,Shelf-1,True
-R035,Reagent-J35,8923-23-6,Sigma-Aldrich,B2613,301.7,2027-10-19,Shelf-10,False
-R036,IntermediateX-352,3137-98-7,Internal-Synth,B3883,252.9,2028-05-25,Shelf-5,True
-R037,IntermediateX-229,1783-30-3,Internal-Synth,B2186,340.4,2028-05-23,Shelf-2,True
-R038,Reagent-M38,6957-78-5,Fisher,B4752,403.0,2026-07-23,Shelf-1,False
-R039,Reagent-N39,8267-21-4,TCI,B2113,464.1,2026-04-11,Shelf-5,False
-R040,Reagent-O40,4910-55-6,Sigma-Aldrich,B3823,146.8,2028-05-11,Shelf-11,False
-R041,IntermediateX-931,5988-59-2,Internal-Synth,B6705,57.4,2027-10-22,Shelf-2,True
-R042,Reagent-Q42,9663-24-5,Sigma-Aldrich,B2633,403.2,2028-04-21,Shelf-5,False
-R043,Reagent-R43,8476-11-6,Merck,B1982,415.6,2026-09-05,Shelf-9,False
-R044,IntermediateX-400,5330-78-5,Internal-Synth,B9398,303.5,2028-02-24,Shelf-4,True
-R045,Reagent-T45,9267-47-1,Merck,B6866,434.4,2026-09-26,Shelf-5,False
-R046,IntermediateX-341,2404-98-6,Internal-Synth,B8566,57.1,2028-01-11,Shelf-10,True
-R047,Reagent-V47,3610-23-2,Sigma-Aldrich,B8421,158.6,2028-04-13,Shelf-2,False
-R048,Reagent-W48,1696-23-3,TCI,B6196,62.2,2026-06-13,Shelf-6,False
-R049,IntermediateX-119,1988-25-7,Internal-Synth,B1480,297.6,2027-04-24,Shelf-8,True
+R000,Hydrochloric acid,7647-01-0,Sigma-Aldrich,B7964,222.2,2027-02-11,Shelf-10,False
+R001,Sulfuric acid,7664-93-9,Sigma-Aldrich,B7275,51.6,2027-05-04,Shelf-11,False
+R002,Nitric acid,7697-37-2,TCI,B7849,394.1,2027-04-22,Shelf-2,False
+R003,Sodium hydroxide,1310-73-2,Fisher,B5053,188.5,2026-07-08,Shelf-11,False
+R004,Potassium hydroxide,1310-58-3,Fisher,B6794,412.3,2027-05-20,Shelf-5,False
+R005,Sodium hypochlorite,7681-52-9,Merck,B3044,279.5,2028-03-13,Shelf-1,False
+R006,Ammonia solution,1336-21-6,Fisher,B8447,317.7,2026-06-23,Shelf-9,False
+R007,Hydrogen peroxide,7722-84-1,TCI,B4190,485.5,2027-02-22,Shelf-10,False
+R008,Sodium hydride,7646-69-7,TCI,B8004,101.3,2026-12-13,Shelf-6,False
+R009,Toluene,108-88-3,Merck,B1394,81.4,2027-11-08,Shelf-8,False
+R010,Tetrahydrofuran,109-99-9,Fisher,B7702,483.9,2027-01-23,Shelf-4,False
+R011,Dichloromethane,75-09-2,Fisher,B4333,237.4,2027-12-24,Shelf-3,False
+R012,Methanol,67-56-1,Merck,B2169,240.5,2026-11-14,Shelf-3,False
+R013,Acetonitrile,75-05-8,TCI,B7027,221.4,2026-06-19,Shelf-10,False
+R014,"N,N-Dimethylformamide",68-12-2,TCI,B7301,159.6,2027-11-30,Shelf-10,False
+R015,Acetone,67-64-1,Merck,B8242,196.8,2028-03-22,Shelf-4,False
+R016,Diethyl ether,60-29-7,Sigma-Aldrich,B7141,74.2,2028-01-25,Shelf-3,False
+R017,Water,7732-18-5,Fisher,B1066,394.5,2027-12-10,Shelf-8,False
+R018,IntermediateX-523,INT-7345,Internal-Synth,B3493,232.2,2027-12-11,Shelf-6,True
+R019,IntermediateX-611,INT-1335,Internal-Synth,B2258,61.7,2027-02-17,Shelf-8,True
+R020,IntermediateX-688,INT-5239,Internal-Synth,B8694,383.7,2027-06-06,Shelf-7,True
+R021,IntermediateX-670,INT-6087,Internal-Synth,B5981,281.8,2027-12-23,Shelf-4,True
+R022,IntermediateX-641,INT-1277,Internal-Synth,B4127,111.2,2027-02-14,Shelf-4,True
+R023,IntermediateX-467,INT-9932,Internal-Synth,B8679,120.8,2028-01-15,Shelf-1,True
