@@ -7,6 +7,7 @@ and (b) exposed as a CrewAI tool (`@tool`) to the agents.
 from __future__ import annotations
 
 import re
+from dataclasses import asdict
 from pathlib import Path
 
 import joblib
@@ -14,6 +15,7 @@ import pandas as pd
 from crewai.tools import tool
 
 from .rag import RAG
+from .safety import check_safety as _check_safety
 from .sanitizer import Sanitizer
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -77,3 +79,14 @@ def sanitize_text_tool(text: str) -> dict:
     """Redact IP-sensitive reagent names before any cloud call."""
     clean, redacted = Sanitizer().scrub(text)
     return {"clean": clean, "redacted": redacted}
+
+
+def check_safety(reagents: list[str]) -> dict:
+    """Run the deterministic safety check and return a plain dict."""
+    return asdict(_check_safety(reagents))
+
+
+@tool("check_safety")
+def check_safety_tool(reagents: list[str]) -> dict:
+    """Check GHS hazards, pairwise incompatibilities and mixing order for a list of reagents."""
+    return check_safety(reagents)

@@ -122,3 +122,10 @@ def test_check_safety_acid_water_order_warning():
                           inventory_csv=ROOT / "data" / "inventory.csv", client=client)
     joined = " ".join(report.procedural_warnings).lower()
     assert "add the acid to the water" in joined
+
+
+def test_check_safety_tool_returns_dict():
+    from eln.tools import check_safety
+    result = check_safety(["Hydrochloric acid", "Sodium hydroxide"])
+    assert result["severity"] == "critical"
+    assert isinstance(result["incompatibilities"], list)
