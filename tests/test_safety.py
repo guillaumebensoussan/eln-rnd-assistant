@@ -129,3 +129,15 @@ def test_check_safety_tool_returns_dict():
     result = check_safety(["Hydrochloric acid", "Sodium hydroxide"])
     assert result["severity"] == "critical"
     assert isinstance(result["incompatibilities"], list)
+
+
+def test_safety_briefing_template_mentions_critical_and_order():
+    from eln.safety.pubchem import PubChemClient
+    from eln.safety import check_safety as cs
+    from eln.crew_safety import write_safety_briefing
+    client = PubChemClient(allow_network=False)
+    report = cs(["Hydrochloric acid", "Sodium hydroxide", "Water"],
+                inventory_csv=ROOT / "data" / "inventory.csv", client=client)
+    text = write_safety_briefing(report)
+    assert "SAFETY ALERT" in text                      # critical present
+    assert "add the acid to the water" in text.lower() # order rule present
