@@ -45,3 +45,43 @@ def test_order_acid_with_water_not_inverted():
     assert "water to the acid" in joined  # phrased as the prohibition
     # explicit anti-inversion: must NOT instruct adding water to acid as the action
     assert "add the water to the acid" not in joined
+
+
+from eln.safety.pubchem import PubChemClient, parse_ghs_view
+
+FIXTURE_CACHE = ROOT / "tests" / "fixtures" / "sds_cache_test.json"
+
+
+def test_pubchem_returns_cached_hazard_without_network():
+    client = PubChemClient(cache_path=FIXTURE_CACHE, allow_network=False)
+    haz = client.get_hazard("7647-01-0")
+    assert haz["cid"] == 313
+    assert "H314" in haz["h_codes"]
+    assert haz["signal_word"] == "Danger"
+    assert haz["source"] == "cache"
+
+
+def test_pubchem_unknown_cas_offline_is_graceful():
+    client = PubChemClient(cache_path=FIXTURE_CACHE, allow_network=False)
+    haz = client.get_hazard("0000-00-0")
+    assert haz["source"] == "unknown"
+    assert haz["h_codes"] == []
+    assert haz["cid"] is None
+
+
+def test_parse_ghs_view_extracts_codes_and_pictograms():
+    sample = {
+        "Record": {"Section": [{"TOCHeading": "Safety and Hazards", "Section": [
+            {"TOCHeading": "Hazards Identification", "Section": [
+                {"TOCHeading": "GHS Classification", "Information": [
+                    {"Name": "Pictogram(s)", "Value": {"StringWithMarkup": [
+                        {"String": "  ", "Markup": [{"Type": "Icon", "Extra": "Corrosive"}]}]}},
+                    {"Name": "Signal", "Value": {"StringWithMarkup": [{"String": "Danger"}]}},
+                    {"Name": "GHS Hazard Statements", "Value": {"StringWithMarkup": [
+                        {"String": "H314 (99.9%): Causes severe skin burns"},
+                        {"String": "H290: May be corrosive to metals"}]}},
+                ]}]}]}]}}
+    parsed = parse_ghs_view(sample)
+    assert parsed["signal_word"] == "Danger"
+    assert parsed["ghs_pictograms"] == ["Corrosive"]
+    assert parsed["h_codes"] == ["H314", "H290"]
