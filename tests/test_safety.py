@@ -141,3 +141,14 @@ def test_safety_briefing_template_mentions_critical_and_order():
     text = write_safety_briefing(report)
     assert "SAFETY ALERT" in text                      # critical present
     assert "add the acid to the water" in text.lower() # order rule present
+
+
+def test_flow_safety_gate_warns_without_halting():
+    from eln.flow import run
+    state = run("toluene at 110 C for 8 h, 2 mol%, 3 bar, purity 97",
+                question="best solvent?",
+                reagents=["Hydrochloric acid", "Sodium hydroxide"])
+    # safety is critical but the Flow still completes (no halt, no errors)
+    assert state.safety["severity"] == "critical"
+    assert not state.errors
+    assert state.report  # report still produced
