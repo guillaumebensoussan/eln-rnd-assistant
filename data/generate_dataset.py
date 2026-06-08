@@ -47,6 +47,9 @@ REAL_REAGENTS = [
     ("Acetone", "67-64-1"),
     ("Diethyl ether", "60-29-7"),
     ("Water", "7732-18-5"),
+    ("Sodium cyanide", "143-33-9"),
+    ("Sodium sulfide", "1313-82-2"),
+    ("Sodium thiosulfate", "7772-98-7"),
 ]
 
 

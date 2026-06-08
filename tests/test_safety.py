@@ -152,3 +152,41 @@ def test_flow_safety_gate_warns_without_halting():
     assert state.safety["severity"] == "critical"
     assert not state.errors
     assert state.report  # report still produced
+
+
+def test_acid_cyanide_is_critical():
+    from eln.safety.pubchem import PubChemClient
+    from eln.safety import check_safety as cs
+    client = PubChemClient(allow_network=False)
+    report = cs(["Hydrochloric acid", "Sodium cyanide"],
+                inventory_csv=ROOT / "data" / "inventory.csv", client=client)
+    assert report.severity == "critical"
+    assert any("toxic" in i.reason.lower() or "hcn" in i.reason.lower()
+               for i in report.incompatibilities)
+
+
+def test_oxidizer_reducing_agent_is_critical():
+    from eln.safety.pubchem import PubChemClient
+    from eln.safety import check_safety as cs
+    client = PubChemClient(allow_network=False)
+    report = cs(["Sodium hypochlorite", "Sodium thiosulfate"],
+                inventory_csv=ROOT / "data" / "inventory.csv", client=client)
+    assert report.severity == "critical"
+
+
+def test_water_reactive_has_handling_warning():
+    from eln.safety.pubchem import PubChemClient
+    from eln.safety import check_safety as cs
+    client = PubChemClient(allow_network=False)
+    report = cs(["Sodium hydride", "Water"],
+                inventory_csv=ROOT / "data" / "inventory.csv", client=client)
+    joined = " ".join(report.procedural_warnings).lower()
+    assert "inert atmosphere" in joined
+
+
+def test_previously_unknown_cas_now_resolved():
+    # ammonia and sodium hydride must now carry real GHS data from the cache
+    from eln.safety.pubchem import PubChemClient
+    client = PubChemClient(allow_network=False)  # data/sds_cache.json
+    assert client.get_hazard("1336-21-6")["source"] == "pubchem"
+    assert client.get_hazard("7646-69-7")["source"] == "pubchem"

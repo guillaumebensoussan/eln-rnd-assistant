@@ -19,6 +19,8 @@ DEFAULT_CACHE = ROOT / "data" / "sds_cache.json"
 
 _CID_URL = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/xref/RegistryID/{cas}/cids/JSON"
 _GHS_URL = "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/JSON?heading=GHS+Classification"
+_FULL_VIEW_URL = "https://pubchem.ncbi.nlm.nih.gov/rest/pug_view/data/compound/{cid}/JSON"
+_NAME_URL = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{q}/cids/JSON"
 _HCODE_RE = re.compile(r"\b(H\d{3})\b")
 _UNKNOWN = {"cid": None, "ghs_pictograms": [], "h_codes": [], "signal_word": None, "source": "unknown"}
 
@@ -90,17 +92,31 @@ class PubChemClient:
     def _fetch(self, cas: str) -> dict:
         try:
             with httpx.Client(timeout=self.timeout) as client:
-                r = client.get(_CID_URL.format(cas=cas))
-                r.raise_for_status()
-                cids = r.json().get("IdentifierList", {}).get("CID", [])
-                if not cids:
+                cid = self._resolve_cid(client, cas)
+                if cid is None:
                     return {"cas": cas, **_UNKNOWN}
-                cid = cids[0]
                 time.sleep(0.25)  # PubChem politeness (<=5 req/s)
                 g = client.get(_GHS_URL.format(cid=cid))
+                if g.status_code == 404:
+                    # Some compounds lack a GHS-heading section; fall back to full view
+                    g = client.get(_FULL_VIEW_URL.format(cid=cid))
                 g.raise_for_status()
                 parsed = parse_ghs_view(g.json())
                 parsed["cid"] = cid
                 return {"cas": cas, **parsed}
         except (httpx.HTTPError, ValueError, KeyError):
             return {"cas": cas, **_UNKNOWN}
+
+    def _resolve_cid(self, client: httpx.Client, cas: str) -> int | None:
+        r = client.get(_CID_URL.format(cas=cas))
+        if r.status_code not in (404, 200):
+            r.raise_for_status()
+        cids = r.json().get("IdentifierList", {}).get("CID", []) if r.status_code == 200 else []
+        if cids:
+            return cids[0]
+        time.sleep(0.25)
+        r2 = client.get(_NAME_URL.format(q=cas))
+        if r2.status_code not in (404, 200):
+            r2.raise_for_status()
+        cids2 = r2.json().get("IdentifierList", {}).get("CID", []) if r2.status_code == 200 else []
+        return cids2[0] if cids2 else None

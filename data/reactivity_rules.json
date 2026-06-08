@@ -24,7 +24,10 @@
     "7722-84-1": ["oxidizer"],
     "7646-69-7": ["water_reactive", "flammable"],
     "7782-50-5": ["oxidizer", "toxic"],
-    "7732-18-5": ["water"]
+    "7732-18-5": ["water"],
+    "143-33-9": ["cyanide_sulfide"],
+    "1313-82-2": ["cyanide_sulfide"],
+    "7772-98-7": ["reducing_agent"]
   },
   "pairs": [
     {"a": "acid", "b": "base", "severity": "critical", "reason": "Violent exothermic neutralisation; large heat release."},
@@ -39,6 +42,7 @@
   "order_rules": [
     {"group": "acid", "with": "water", "instruction": "Add the acid to the water slowly, never water to the acid.", "add_last": true},
     {"group": "base", "with": "water", "instruction": "Add the base to the water slowly, with stirring and cooling.", "add_last": true},
-    {"group": "oxidizer", "with": "any", "instruction": "Add the oxidizer last and slowly.", "add_last": true}
+    {"group": "oxidizer", "with": "any", "instruction": "Add the oxidizer last and slowly.", "add_last": true},
+    {"group": "water_reactive", "with": "any", "instruction": "Handle water-reactive reagents under inert atmosphere; keep them away from water and aqueous solutions.", "add_last": false}
   ]
 }

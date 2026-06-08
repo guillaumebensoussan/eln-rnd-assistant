@@ -17,9 +17,12 @@ R014,"N,N-Dimethylformamide",68-12-2,TCI,B7301,159.6,2027-11-30,Shelf-10,False
 R015,Acetone,67-64-1,Merck,B8242,196.8,2028-03-22,Shelf-4,False
 R016,Diethyl ether,60-29-7,Sigma-Aldrich,B7141,74.2,2028-01-25,Shelf-3,False
 R017,Water,7732-18-5,Fisher,B1066,394.5,2027-12-10,Shelf-8,False
-R018,IntermediateX-523,INT-7345,Internal-Synth,B3493,232.2,2027-12-11,Shelf-6,True
-R019,IntermediateX-611,INT-1335,Internal-Synth,B2258,61.7,2027-02-17,Shelf-8,True
-R020,IntermediateX-688,INT-5239,Internal-Synth,B8694,383.7,2027-06-06,Shelf-7,True
-R021,IntermediateX-670,INT-6087,Internal-Synth,B5981,281.8,2027-12-23,Shelf-4,True
-R022,IntermediateX-641,INT-1277,Internal-Synth,B4127,111.2,2027-02-14,Shelf-4,True
-R023,IntermediateX-467,INT-9932,Internal-Synth,B8679,120.8,2028-01-15,Shelf-1,True
+R018,Sodium cyanide,143-33-9,Merck,B7345,391.5,2027-05-29,Shelf-6,False
+R019,Sodium sulfide,1313-82-2,TCI,B6118,74.2,2026-09-01,Shelf-2,False
+R020,Sodium thiosulfate,7772-98-7,Merck,B7014,238.2,2028-02-13,Shelf-7,False
+R021,IntermediateX-171,INT-7884,Internal-Synth,B6170,279.0,2027-08-06,Shelf-1,True
+R022,IntermediateX-602,INT-8153,Internal-Synth,B3735,20.3,2026-11-29,Shelf-5,True
+R023,IntermediateX-983,INT-2931,Internal-Synth,B3488,427.4,2027-01-21,Shelf-1,True
+R024,IntermediateX-310,INT-8394,Internal-Synth,B1524,144.3,2028-04-08,Shelf-4,True
+R025,IntermediateX-490,INT-6956,Internal-Synth,B2136,393.0,2027-05-30,Shelf-11,True
+R026,IntermediateX-697,INT-4682,Internal-Synth,B4657,407.9,2026-11-06,Shelf-2,True

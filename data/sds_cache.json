@@ -139,13 +139,6 @@
     "signal_word": "Danger",
     "source": "pubchem"
   },
-  "1336-21-6": {
-    "cid": null,
-    "ghs_pictograms": [],
-    "h_codes": [],
-    "signal_word": null,
-    "source": "unknown"
-  },
   "7722-84-1": {
     "cid": 784,
     "ghs_pictograms": [
@@ -178,13 +171,6 @@
     ],
     "signal_word": "Danger",
     "source": "pubchem"
-  },
-  "7646-69-7": {
-    "cid": null,
-    "ghs_pictograms": [],
-    "h_codes": [],
-    "signal_word": null,
-    "source": "unknown"
   },
   "108-88-3": {
     "cid": 1140,
@@ -400,46 +386,138 @@
     "signal_word": "Warning",
     "source": "pubchem"
   },
-  "INT-7345": {
+  "143-33-9": {
+    "cid": 8929,
+    "ghs_pictograms": [
+      "Corrosive",
+      "Acute Toxic",
+      "Irritant",
+      "Health Hazard",
+      "Environmental Hazard"
+    ],
+    "h_codes": [
+      "H290",
+      "H300",
+      "H310",
+      "H315",
+      "H318",
+      "H319",
+      "H330",
+      "H372",
+      "H400",
+      "H410",
+      "H316",
+      "H361"
+    ],
+    "signal_word": "Danger",
+    "source": "pubchem"
+  },
+  "1313-82-2": {
+    "cid": 237873,
+    "ghs_pictograms": [
+      "Corrosive",
+      "Acute Toxic",
+      "Irritant",
+      "Environmental Hazard",
+      "Flammable",
+      "Health Hazard"
+    ],
+    "h_codes": [
+      "H290",
+      "H301",
+      "H302",
+      "H311",
+      "H314",
+      "H318",
+      "H400",
+      "H251",
+      "H335",
+      "H371",
+      "H312"
+    ],
+    "signal_word": "Danger",
+    "source": "pubchem"
+  },
+  "7772-98-7": {
+    "cid": 24477,
+    "ghs_pictograms": [],
+    "h_codes": [],
+    "signal_word": null,
+    "source": "pubchem"
+  },
+  "INT-7884": {
     "cid": null,
     "ghs_pictograms": [],
     "h_codes": [],
     "signal_word": null,
     "source": "unknown"
   },
-  "INT-1335": {
+  "INT-8153": {
     "cid": null,
     "ghs_pictograms": [],
     "h_codes": [],
     "signal_word": null,
     "source": "unknown"
   },
-  "INT-5239": {
+  "INT-2931": {
     "cid": null,
     "ghs_pictograms": [],
     "h_codes": [],
     "signal_word": null,
     "source": "unknown"
   },
-  "INT-6087": {
+  "INT-8394": {
     "cid": null,
     "ghs_pictograms": [],
     "h_codes": [],
     "signal_word": null,
     "source": "unknown"
   },
-  "INT-1277": {
+  "INT-6956": {
     "cid": null,
     "ghs_pictograms": [],
     "h_codes": [],
     "signal_word": null,
     "source": "unknown"
   },
-  "INT-9932": {
+  "INT-4682": {
     "cid": null,
     "ghs_pictograms": [],
     "h_codes": [],
     "signal_word": null,
     "source": "unknown"
+  },
+  "1336-21-6": {
+    "cid": 14923,
+    "ghs_pictograms": [
+      "Corrosive",
+      "Environmental Hazard",
+      "Irritant",
+      "Health Hazard",
+      "Acute Toxic"
+    ],
+    "h_codes": [
+      "H314",
+      "H400",
+      "H318",
+      "H335",
+      "H402",
+      "H290",
+      "H302",
+      "H370",
+      "H401",
+      "H371",
+      "H373",
+      "H331"
+    ],
+    "signal_word": "Danger",
+    "source": "pubchem"
+  },
+  "7646-69-7": {
+    "cid": 24758,
+    "ghs_pictograms": [],
+    "h_codes": [],
+    "signal_word": null,
+    "source": "pubchem"
   }
 }
