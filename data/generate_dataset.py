@@ -27,29 +27,62 @@ SOLVENTS = ["THF", "DCM", "toluene", "methanol", "DMF", "water", "acetonitrile"]
 EXP_TYPES = ["synthesis", "characterisation", "formulation", "qc"]
 
 
+# Curated real reagents (name, CAS). The proprietary subset keeps internal codes.
+REAL_REAGENTS = [
+    ("Hydrochloric acid", "7647-01-0"),
+    ("Sulfuric acid", "7664-93-9"),
+    ("Nitric acid", "7697-37-2"),
+    ("Sodium hydroxide", "1310-73-2"),
+    ("Potassium hydroxide", "1310-58-3"),
+    ("Sodium hypochlorite", "7681-52-9"),
+    ("Ammonia solution", "1336-21-6"),
+    ("Hydrogen peroxide", "7722-84-1"),
+    ("Sodium hydride", "7646-69-7"),
+    ("Toluene", "108-88-3"),
+    ("Tetrahydrofuran", "109-99-9"),
+    ("Dichloromethane", "75-09-2"),
+    ("Methanol", "67-56-1"),
+    ("Acetonitrile", "75-05-8"),
+    ("N,N-Dimethylformamide", "68-12-2"),
+    ("Acetone", "67-64-1"),
+    ("Diethyl ether", "60-29-7"),
+    ("Water", "7732-18-5"),
+    ("Sodium cyanide", "143-33-9"),
+    ("Sodium sulfide", "1313-82-2"),
+    ("Sodium thiosulfate", "7772-98-7"),
+]
+
+
 def make_inventory(n: int = 50) -> pd.DataFrame:
-    suppliers = ["Sigma-Aldrich", "Merck", "TCI", "Fisher", "Internal-Synth"]
     rows = []
-    for i in range(n):
-        # ~30% proprietary reagents (internal codes) => IP-sensitive
-        proprietary = rng.random() < 0.30
-        if proprietary:
-            name = f"IntermediateX-{rng.integers(100, 999)}"
-            supplier = "Internal-Synth"
-        else:
-            name = f"Reagent-{chr(65 + i % 26)}{i}"
-            supplier = str(rng.choice(suppliers[:-1]))
+    for i, (name, cas) in enumerate(REAL_REAGENTS):
         rows.append(
             {
                 "reagent_id": f"R{i:03d}",
                 "name": name,
-                "cas": f"{rng.integers(50, 9999)}-{rng.integers(10, 99)}-{rng.integers(1, 9)}",
-                "supplier": supplier,
+                "cas": cas,
+                "supplier": str(rng.choice(["Sigma-Aldrich", "Merck", "TCI", "Fisher"])),
                 "batch": f"B{rng.integers(1000, 9999)}",
                 "quantity_g": round(float(rng.uniform(5, 500)), 1),
                 "expiry": str(date(2026, 1, 1) + timedelta(days=int(rng.integers(30, 900)))),
                 "location": f"Shelf-{rng.integers(1, 12)}",
-                "ip_sensitive": bool(proprietary),
+                "ip_sensitive": False,
+            }
+        )
+    # proprietary / IP-sensitive reagents with internal, non-resolvable CAS
+    for j in range(6):
+        i = len(REAL_REAGENTS) + j
+        rows.append(
+            {
+                "reagent_id": f"R{i:03d}",
+                "name": f"IntermediateX-{rng.integers(100, 999)}",
+                "cas": f"INT-{rng.integers(1000, 9999)}",
+                "supplier": "Internal-Synth",
+                "batch": f"B{rng.integers(1000, 9999)}",
+                "quantity_g": round(float(rng.uniform(5, 500)), 1),
+                "expiry": str(date(2026, 1, 1) + timedelta(days=int(rng.integers(30, 900)))),
+                "location": f"Shelf-{rng.integers(1, 12)}",
+                "ip_sensitive": True,
             }
         )
     return pd.DataFrame(rows)

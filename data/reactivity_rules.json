@@ -1,0 +1,48 @@
+{
+  "hcode_to_groups": {
+    "H271": ["oxidizer"],
+    "H272": ["oxidizer"],
+    "H260": ["water_reactive"],
+    "H261": ["water_reactive"],
+    "H250": ["pyrophoric"],
+    "H224": ["flammable"],
+    "H225": ["flammable"],
+    "H226": ["flammable"],
+    "H228": ["flammable"],
+    "H242": ["flammable"],
+    "H314": ["corrosive"],
+    "H290": ["corrosive_metal"]
+  },
+  "cas_overrides": {
+    "7647-01-0": ["acid"],
+    "7664-93-9": ["acid", "oxidizer"],
+    "7697-37-2": ["acid", "oxidizer"],
+    "1310-73-2": ["base"],
+    "1310-58-3": ["base"],
+    "7681-52-9": ["hypochlorite", "oxidizer"],
+    "1336-21-6": ["ammonia", "base"],
+    "7722-84-1": ["oxidizer"],
+    "7646-69-7": ["water_reactive", "flammable"],
+    "7782-50-5": ["oxidizer", "toxic"],
+    "7732-18-5": ["water"],
+    "143-33-9": ["cyanide_sulfide"],
+    "1313-82-2": ["cyanide_sulfide"],
+    "7772-98-7": ["reducing_agent"]
+  },
+  "pairs": [
+    {"a": "acid", "b": "base", "severity": "critical", "reason": "Violent exothermic neutralisation; large heat release."},
+    {"a": "oxidizer", "b": "flammable", "severity": "critical", "reason": "Fire/explosion risk: oxidizer plus fuel."},
+    {"a": "oxidizer", "b": "reducing_agent", "severity": "critical", "reason": "Violent redox reaction."},
+    {"a": "acid", "b": "hypochlorite", "severity": "critical", "reason": "Releases toxic chlorine gas."},
+    {"a": "hypochlorite", "b": "ammonia", "severity": "critical", "reason": "Releases toxic chloramine gas."},
+    {"a": "water_reactive", "b": "water", "severity": "critical", "reason": "Violent reaction with water; heat and flammable gas."},
+    {"a": "acid", "b": "cyanide_sulfide", "severity": "critical", "reason": "Releases toxic HCN/H2S gas."},
+    {"a": "pyrophoric", "b": "flammable", "severity": "warning", "reason": "Pyrophoric solid near flammables; ignition risk."}
+  ],
+  "order_rules": [
+    {"group": "acid", "with": "water", "instruction": "Add the acid to the water slowly, never water to the acid.", "add_last": true},
+    {"group": "base", "with": "water", "instruction": "Add the base to the water slowly, with stirring and cooling.", "add_last": true},
+    {"group": "oxidizer", "with": "any", "instruction": "Add the oxidizer last and slowly.", "add_last": true},
+    {"group": "water_reactive", "with": "any", "instruction": "Handle water-reactive reagents under inert atmosphere; keep them away from water and aqueous solutions.", "add_last": false}
+  ]
+}

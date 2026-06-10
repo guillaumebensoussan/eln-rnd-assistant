@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import json
 import logging
+from dataclasses import asdict
 from pathlib import Path
 
 from crewai.flow.flow import Flow, listen, start
@@ -20,6 +21,7 @@ from pydantic import BaseModel
 from .crew_analytics import write_report
 from .inventory import Inventory
 from .rag import RAG
+from .safety import check_safety
 from .sanitizer import Sanitizer, audit
 from .tools import parse_experiment, predict_outcome
 
@@ -38,6 +40,8 @@ class ELNState(BaseModel):
     rag_context: str = ""
     prediction: dict = {}
     report: str = ""
+    reagents: list[str] = []
+    safety: dict = {}
     errors: list[str] = []
 
 
@@ -70,8 +74,19 @@ class ELNFlow(Flow[ELNState]):
         self.state.rag_context = RAG().context(q, k=4)
         return "retrieval_done"
 
-    # ---- Validation gate (handoff Crew1 -> Crew2) ----
     @listen(retrieval)
+    def safety_check(self, _):
+        log.info("[Crew1:Safety] running deterministic SDS safety check")
+        reagents = self.state.reagents or [self.state.record.get("solvent", "")]
+        reagents = [r for r in reagents if r]
+        if reagents:
+            self.state.safety = asdict(check_safety(reagents))
+            log.info("[Crew1:Safety] severity=%s incompatibilities=%d",
+                     self.state.safety["severity"], len(self.state.safety["incompatibilities"]))
+        return "safety_done"
+
+    # ---- Validation gate (handoff Crew1 -> Crew2) ----
+    @listen(safety_check)
     def validate_handoff(self, _):
         log.info("[Gate] validating dataset contract + required features")
         try:
@@ -110,14 +125,18 @@ class ELNFlow(Flow[ELNState]):
 
         log.info("[Crew2:Report] drafting report (%d names redacted)", len(redacted))
         self.state.report = write_report(clean, self.state.prediction)
+        if self.state.safety.get("severity") == "critical":
+            self.state.report = (
+                "⛔ SAFETY ALERT — critical reagent incompatibility detected. "
+                "Review the Safety check before proceeding.\n\n" + self.state.report
+            )
         return self.state
 
 
-def run(text: str, question: str = "") -> ELNState:
+def run(text: str, question: str = "", reagents: list[str] | None = None) -> ELNState:
     flow = ELNFlow()
-    flow.kickoff(inputs={"text": text, "question": question})
+    flow.kickoff(inputs={"text": text, "question": question, "reagents": reagents or []})
     s = flow.state
-    # materialise a snapshot detached from the StateProxy (reliable read outside the Flow)
     return ELNState(
         text=s.text,
         question=s.question,
@@ -127,4 +146,6 @@ def run(text: str, question: str = "") -> ELNState:
         prediction=dict(s.prediction),
         report=s.report,
         errors=list(s.errors),
+        reagents=list(s.reagents),
+        safety=dict(s.safety),
     )

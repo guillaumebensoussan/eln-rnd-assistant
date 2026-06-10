@@ -8,6 +8,7 @@ dependencies = [
     "anthropic>=0.105.2",
     "chromadb>=1.1.1",
     "crewai>=1.14.6",
+    "httpx>=0.28.1",
     "joblib>=1.5.3",
     "matplotlib>=3.10.9",
     "pandas>=3.0.3",
@@ -20,3 +21,14 @@ dependencies = [
 dev = [
     "pytest>=9.0.3",
 ]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+extend-select = ["F"]
+
+[tool.ruff.lint.per-file-ignores]
+"app/streamlit_app.py" = ["E402"]
+# Tests set environment variables before importing the package.
+"tests/*.py" = ["E402"]

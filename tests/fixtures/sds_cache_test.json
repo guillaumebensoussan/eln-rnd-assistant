@@ -1,0 +1,10 @@
+{
+  "7647-01-0": {
+    "cas": "7647-01-0",
+    "cid": 313,
+    "ghs_pictograms": ["Corrosive", "Acute Toxic"],
+    "h_codes": ["H314", "H331"],
+    "signal_word": "Danger",
+    "source": "cache"
+  }
+}

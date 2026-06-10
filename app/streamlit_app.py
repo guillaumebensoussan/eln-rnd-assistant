@@ -15,6 +15,7 @@ from eln.flow import run
 from eln.inventory import Inventory
 from eln.llm import has_cloud
 from eln.sanitizer import read_audit
+from eln.safety import check_safety
 
 st.set_page_config(page_title="Agentic ELN", layout="wide")
 st.title("Agentic ELN — IP-safe R&D Lab Notebook")
@@ -22,8 +23,8 @@ st.caption(
     ("Cloud LLM: Claude (key detected)" if has_cloud() else "Local mode (no API key — report falls back to template)")
 )
 
-tab_log, tab_inv, tab_audit, tab_hist = st.tabs(
-    ["Log experiment", "Inventory", "IP Audit log", "History"]
+tab_log, tab_inv, tab_safety, tab_audit, tab_hist = st.tabs(
+    ["Log experiment", "Inventory", "Safety check", "IP Audit log", "History"]
 )
 
 with tab_log:
@@ -61,6 +62,52 @@ with tab_inv:
     c1.metric("Low stock", len(alerts["low_stock"]))
     c2.metric("Expired", len(alerts["expired"]))
     st.dataframe(inv.df, use_container_width=True, hide_index=True)
+
+with tab_safety:
+    st.subheader("SDS safety & compatibility check")
+    inv_s = Inventory()
+    chosen = st.multiselect("Reagents to combine", options=sorted(inv_s.df["name"]))
+    if st.button("Run safety check", type="primary") and chosen:
+        report = check_safety(chosen)
+        if report.severity == "critical":
+            st.error("⛔ SAFETY ALERT — critical incompatibility. Read carefully before proceeding.")
+        elif report.severity == "warning":
+            st.warning("⚠️ Safety warnings present.")
+        else:
+            st.success("No critical incompatibility detected for this set.")
+
+        if report.incompatibilities:
+            st.markdown("**Incompatibilities**")
+            st.dataframe(
+                pd.DataFrame([{"A": i.a, "B": i.b, "severity": i.severity, "reason": i.reason}
+                              for i in report.incompatibilities]),
+                use_container_width=True, hide_index=True,
+            )
+        if report.procedural_warnings:
+            st.markdown("**Mixing order**")
+            for w in report.procedural_warnings:
+                st.markdown(f"- {w}")
+            st.caption("Suggested addition order: " + " → ".join(report.addition_order))
+        if report.hazards:
+            st.markdown("**Per-reagent hazards**")
+            st.dataframe(
+                pd.DataFrame([{"reagent": h.name, "H-codes": ", ".join(h.h_codes),
+                               "pictograms": ", ".join(h.ghs_pictograms), "source": h.source}
+                              for h in report.hazards]),
+                use_container_width=True, hide_index=True,
+            )
+        if report.unknowns:
+            st.info("No public SDS for: " + ", ".join(report.unknowns) + " — check the internal safety sheet.")
+
+        if report.severity == "critical":
+            ack = st.checkbox("I have read these warnings and take responsibility.")
+            if ack:
+                from eln.sanitizer import audit
+                audit(operation="safety_acknowledgement", sent_to_cloud="",
+                      redacted=[], stayed_local=[f"ack:{', '.join(chosen)}"])
+                st.success("Acknowledged and logged. You may proceed at your discretion.")
+            else:
+                st.stop()
 
 with tab_audit:
     st.subheader("IP audit log — what left the server vs stayed local")
