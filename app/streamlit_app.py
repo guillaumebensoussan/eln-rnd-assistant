@@ -13,7 +13,8 @@ import streamlit as st
 
 from eln.flow import run
 from eln.inventory import Inventory
-from eln.llm import has_cloud
+from eln.chat import ChatEngine
+from eln.llm import get_model, has_cloud
 from eln.sanitizer import read_audit
 from eln.safety import check_safety
 
@@ -23,9 +24,47 @@ st.caption(
     ("Cloud LLM: Claude (key detected)" if has_cloud() else "Local mode (no API key — report falls back to template)")
 )
 
-tab_log, tab_inv, tab_safety, tab_audit, tab_hist = st.tabs(
-    ["Log experiment", "Inventory", "Safety check", "IP Audit log", "History"]
+tab_chat, tab_log, tab_inv, tab_safety, tab_audit, tab_hist = st.tabs(
+    ["Assistant", "Log experiment", "Inventory", "Safety check", "IP Audit log", "History"]
 )
+
+with tab_chat:
+    st.subheader("Lab assistant")
+    st.caption(
+        f"Cloud LLM: {get_model()}" if has_cloud()
+        else "Local mode — deterministic answers (no API key set)"
+    )
+
+    if "chat_history" not in st.session_state:
+        st.session_state.chat_history = []
+    if "chat_pending_ack" not in st.session_state:
+        st.session_state.chat_pending_ack = False
+
+    for msg in st.session_state.chat_history:
+        with st.chat_message(msg["role"]):
+            st.markdown(msg["content"])
+
+    if st.session_state.chat_pending_ack:
+        st.error("⛔ SAFETY ALERT — critical incompatibility. "
+                 "Read the warnings above before continuing.")
+        if st.checkbox("I have read these warnings and take responsibility.",
+                       key="chat_ack"):
+            from eln.sanitizer import audit
+            audit(operation="safety_acknowledgement", sent_to_cloud="",
+                  redacted=[], stayed_local=["chat critical-alert acknowledgement"])
+            st.session_state.chat_pending_ack = False
+            st.rerun()
+
+    prompt = st.chat_input("Describe your next reaction or ask about the lab",
+                           disabled=st.session_state.chat_pending_ack)
+    if prompt:
+        with st.spinner("Thinking…"):
+            reply = ChatEngine().reply(st.session_state.chat_history, prompt)
+        st.session_state.chat_history.append({"role": "user", "content": prompt})
+        st.session_state.chat_history.append({"role": "assistant", "content": reply.text})
+        if reply.critical:
+            st.session_state.chat_pending_ack = True
+        st.rerun()
 
 with tab_log:
     st.subheader("Log a new experiment")
