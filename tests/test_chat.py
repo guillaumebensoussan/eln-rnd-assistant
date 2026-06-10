@@ -123,3 +123,71 @@ def test_safe_check_safety_accepts_aliases_and_returns_no_real_names(tmp_path, m
     # the underlying check really resolved the real reagent (it is in inventory,
     # its CAS is internal so it lands in unknowns — as the alias, not the name)
     assert any(alias in u for u in result["unknowns"]) or result["hazards"]
+
+
+from eln.chat.engine import ChatEngine, ChatReply
+
+
+def _local_engine(monkeypatch, tmp_path):
+    import eln.sanitizer as sanitizer_mod
+    from eln import llm as llm_mod
+    monkeypatch.setattr(sanitizer_mod, "AUDIT_LOG", tmp_path / "audit.jsonl")
+    monkeypatch.setattr(llm_mod, "has_cloud", lambda: False)
+    return ChatEngine()
+
+
+def test_local_safety_reply_is_critical_and_briefed(monkeypatch, tmp_path):
+    engine = _local_engine(monkeypatch, tmp_path)
+    reply = engine.reply([], "Is it safe to mix Hydrochloric acid with Sodium hydroxide?")
+    assert isinstance(reply, ChatReply)
+    assert reply.mode == "local"
+    assert reply.critical is True
+    assert "SAFETY ALERT" in reply.text
+
+
+def test_local_safety_reply_without_reagents_asks_for_them(monkeypatch, tmp_path):
+    engine = _local_engine(monkeypatch, tmp_path)
+    reply = engine.reply([], "Is this mix dangerous?")
+    assert reply.critical is False
+    assert "reagent" in reply.text.lower()
+
+
+def test_local_unknown_intent_lists_capabilities(monkeypatch, tmp_path):
+    engine = _local_engine(monkeypatch, tmp_path)
+    reply = engine.reply([], "Hello!")
+    low = reply.text.lower()
+    assert "safety" in low and "predict" in low and "history" in low and "inventory" in low
+
+
+def test_local_inventory_reply_quotes_stock(monkeypatch, tmp_path):
+    engine = _local_engine(monkeypatch, tmp_path)
+    reply = engine.reply([], "How much Toluene is left in stock?")
+    assert "Toluene" in reply.text
+
+
+def test_cloud_failure_falls_back_to_local(monkeypatch, tmp_path):
+    import eln.sanitizer as sanitizer_mod
+    from eln import llm as llm_mod
+    monkeypatch.setattr(sanitizer_mod, "AUDIT_LOG", tmp_path / "audit.jsonl")
+    monkeypatch.setattr(llm_mod, "has_cloud", lambda: True)
+    engine = ChatEngine()
+    monkeypatch.setattr(engine, "_cloud_reply",
+                        lambda *a, **k: (_ for _ in ()).throw(RuntimeError("quota")))
+    reply = engine.reply([], "Is it safe to mix Hydrochloric acid with Sodium hydroxide?")
+    assert reply.mode == "local_fallback"
+    assert "answered locally" in reply.text
+    assert reply.critical is True
+
+
+def test_chat_turn_is_audited(monkeypatch, tmp_path):
+    import json as _json
+    import eln.sanitizer as sanitizer_mod
+    from eln import llm as llm_mod
+    log = tmp_path / "audit.jsonl"
+    monkeypatch.setattr(sanitizer_mod, "AUDIT_LOG", log)
+    monkeypatch.setattr(llm_mod, "has_cloud", lambda: False)
+    ChatEngine().reply([], "How much Toluene is left?")
+    entries = [_json.loads(line) for line in log.read_text().splitlines()]
+    assert any(e["operation"] == "chat_turn" for e in entries)
+    turn = next(e for e in entries if e["operation"] == "chat_turn")
+    assert turn["chars_sent_to_cloud"] == 0  # local path: nothing left the machine
