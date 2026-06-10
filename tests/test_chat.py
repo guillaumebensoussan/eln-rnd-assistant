@@ -52,6 +52,20 @@ def test_unknown_provider_falls_back_to_prefix_convention(monkeypatch):
     assert llm.has_cloud() is False
 
 
+def test_ollama_model_needs_no_api_key(monkeypatch):
+    monkeypatch.setenv("ELN_MODEL", "ollama/gemma4:latest")
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    monkeypatch.delenv("OLLAMA_API_KEY", raising=False)
+    assert llm.has_cloud() is True
+
+
+def test_ollama_is_flagged_as_local(monkeypatch):
+    monkeypatch.setenv("ELN_MODEL", "ollama/gemma4:latest")
+    assert llm.is_local() is True
+    monkeypatch.setenv("ELN_MODEL", "anthropic/claude-sonnet-4-5")
+    assert llm.is_local() is False
+
+
 from eln.chat.router import classify_intent, extract_reagents
 
 
@@ -222,3 +236,21 @@ def test_history_window_is_scrubbed_before_cloud(monkeypatch, tmp_path):
     assert sensitive not in transcript
     assert alias in transcript
     assert transcript.count("assistant:") == 12  # HISTORY_WINDOW
+
+
+def test_local_llm_turn_audits_zero_chars_to_cloud(monkeypatch, tmp_path):
+    import json as _json
+    import eln.sanitizer as sanitizer_mod
+    from eln import llm as llm_mod
+    log = tmp_path / "audit.jsonl"
+    monkeypatch.setattr(sanitizer_mod, "AUDIT_LOG", log)
+    monkeypatch.setattr(llm_mod, "has_cloud", lambda: True)
+    monkeypatch.setattr(llm_mod, "is_local", lambda: True)
+    engine = ChatEngine()
+    monkeypatch.setattr(engine, "_cloud_reply",
+                        lambda *a, **k: ChatReply(text="ok", mode="cloud"))
+    engine.reply([], "How much Toluene is left in stock?")
+    entries = [_json.loads(line) for line in log.read_text().splitlines()]
+    turn = next(e for e in entries if e["operation"] == "chat_turn")
+    assert turn["chars_sent_to_cloud"] == 0  # Ollama inference stays on-device
+    assert any("Ollama" in s for s in turn["stayed_local"])
