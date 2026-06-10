@@ -191,3 +191,34 @@ def test_chat_turn_is_audited(monkeypatch, tmp_path):
     assert any(e["operation"] == "chat_turn" for e in entries)
     turn = next(e for e in entries if e["operation"] == "chat_turn")
     assert turn["chars_sent_to_cloud"] == 0  # local path: nothing left the machine
+
+
+# Fix 1: word-boundary tests
+def test_extract_reagents_word_boundaries():
+    assert extract_reagents("the wastewater tank is underwater") == []
+    assert extract_reagents("add Water to the flask") == ["Water"]
+
+
+# Fix 2: token-based intent tests
+def test_intent_reactor_is_not_safety():
+    assert classify_intent("I put it in the reactor overnight") == "unknown"
+
+
+def test_intent_turn_left_is_not_inventory():
+    assert classify_intent("turn left then right at the bench") == "unknown"
+
+
+def test_intent_reaction_is_safety():
+    assert classify_intent("planning a reaction with bleach tomorrow") == "safety"
+
+
+# Fix 3: history window scrub test
+def test_history_window_is_scrubbed_before_cloud(monkeypatch, tmp_path):
+    engine = _local_engine(monkeypatch, tmp_path)
+    s = engine.sanitizer
+    sensitive, alias = next(iter(s.alias_map.items()))
+    history = [{"role": "assistant", "content": f"Stock of {sensitive}: 20 g"}] * 15
+    transcript = engine._sanitized_transcript(history)
+    assert sensitive not in transcript
+    assert alias in transcript
+    assert transcript.count("assistant:") == 12  # HISTORY_WINDOW

@@ -60,6 +60,12 @@ class ChatEngine:
               stayed_local=["raw message", "reagent names", "full local answer"])
         return self._local_reply(message, reagents)
 
+    def _sanitized_transcript(self, history: list[dict]) -> str:
+        """Last HISTORY_WINDOW messages, scrubbed — history stores REAL names locally."""
+        window = history[-HISTORY_WINDOW:]
+        return "\n".join(
+            f"{m['role']}: {self.sanitizer.scrub(m['content'])[0]}" for m in window)
+
     # ---- local path (deterministic) ----
 
     def _local_reply(self, message: str, reagents: list[str]) -> ChatReply:
@@ -105,9 +111,7 @@ class ChatEngine:
         from ..crew_safety import ehs_agent
         from .safe_tools import SAFE_TOOLS
 
-        window = history[-HISTORY_WINDOW:]
-        transcript = "\n".join(
-            f"{m['role']}: {self.sanitizer.scrub(m['content'])[0]}" for m in window)
+        transcript = self._sanitized_transcript(history)
         aliases = [self.sanitizer.scrub(r)[0] for r in reagents]
 
         assistant = Agent(
