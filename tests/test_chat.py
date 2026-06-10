@@ -24,3 +24,29 @@ def test_sanitizer_unscrub_is_inverse_of_scrub():
 def test_sanitizer_unscrub_handles_text_without_aliases():
     s = Sanitizer()
     assert s.unscrub("plain text, no alias") == "plain text, no alias"
+
+
+from eln import llm
+
+
+def test_default_model_requires_anthropic_key(monkeypatch):
+    monkeypatch.delenv("ELN_MODEL", raising=False)
+    monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+    assert llm.has_cloud() is False
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")
+    assert llm.has_cloud() is True
+
+
+def test_gemini_model_requires_gemini_key(monkeypatch):
+    monkeypatch.setenv("ELN_MODEL", "gemini/gemini-2.5-flash")
+    monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-test")  # wrong provider's key
+    assert llm.has_cloud() is False
+    monkeypatch.setenv("GEMINI_API_KEY", "g-test")
+    assert llm.has_cloud() is True
+
+
+def test_unknown_provider_falls_back_to_prefix_convention(monkeypatch):
+    monkeypatch.setenv("ELN_MODEL", "mistral/mistral-large")
+    monkeypatch.delenv("MISTRAL_API_KEY", raising=False)
+    assert llm.has_cloud() is False
