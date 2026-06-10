@@ -74,6 +74,11 @@ Set `ELN_MODEL` in `.env` (LiteLLM format) with the matching key:
 | Anthropic (default) | `anthropic/claude-sonnet-4-5` | `ANTHROPIC_API_KEY` |
 | Google | `gemini/gemini-2.5-flash` | `GEMINI_API_KEY` |
 | OpenAI | `openai/gpt-4o-mini` | `OPENAI_API_KEY` |
+| Ollama (fully local) | `ollama/gemma4:latest` | none — needs `ollama serve` with the model pulled |
+
+With an Ollama model, the agentic chat runs entirely on this machine: the
+sanitiser still applies (defense in depth), but the audit log records
+`chars_sent_to_cloud = 0` because LLM inference never leaves the workstation.
 
 ## Installation
 

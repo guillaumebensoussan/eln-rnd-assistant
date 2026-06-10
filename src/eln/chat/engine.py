@@ -46,8 +46,13 @@ class ChatEngine:
         clean_msg, redacted = self.sanitizer.scrub(message)
 
         if llm.has_cloud():
-            audit(operation="chat_turn", sent_to_cloud=clean_msg,
-                  redacted=redacted, stayed_local=["raw message", "reagent names"])
+            # A local LLM (Ollama) keeps inference on this machine: 0 chars leave.
+            stayed = ["raw message", "reagent names"]
+            if llm.is_local():
+                stayed.append("LLM inference (local Ollama server)")
+            audit(operation="chat_turn",
+                  sent_to_cloud="" if llm.is_local() else clean_msg,
+                  redacted=redacted, stayed_local=stayed)
             try:
                 return self._cloud_reply(history, clean_msg, reagents)
             except Exception:

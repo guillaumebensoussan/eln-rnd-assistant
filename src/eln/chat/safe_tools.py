@@ -15,6 +15,7 @@ import json
 
 from crewai.tools import tool
 
+from .. import llm
 from ..rag import RAG
 from ..sanitizer import Sanitizer, audit
 from ..tools import check_safety as _check_safety
@@ -43,11 +44,16 @@ def scrub_obj(obj, sanitizer: Sanitizer | None = None):
 
 def _audited(name: str, result):
     clean = scrub_obj(result)
+    # With a local LLM (Ollama) the scrubbed result never leaves the machine.
+    payload = "" if llm.is_local() else json.dumps(clean, ensure_ascii=False, default=str)
+    stayed = ["raw tool arguments and results"]
+    if llm.is_local():
+        stayed.append("LLM inference (local Ollama server)")
     audit(
         operation=f"chat_tool:{name}",
-        sent_to_cloud=json.dumps(clean, ensure_ascii=False, default=str),
+        sent_to_cloud=payload,
         redacted=[],
-        stayed_local=["raw tool arguments and results"],
+        stayed_local=stayed,
     )
     return clean
 

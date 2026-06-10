@@ -14,15 +14,22 @@ import streamlit as st
 from eln.flow import run
 from eln.inventory import Inventory
 from eln.chat import ChatEngine
-from eln.llm import get_model, has_cloud
+from eln.llm import get_model, has_cloud, is_local
 from eln.sanitizer import read_audit
 from eln.safety import check_safety
 
+
+def llm_banner() -> str:
+    if not has_cloud():
+        return "No LLM configured — deterministic templates (set ELN_MODEL / an API key in .env)"
+    if is_local():
+        return f"Local LLM: {get_model()} via Ollama — nothing leaves this machine"
+    return f"Cloud LLM: {get_model()} (sanitised text only)"
+
+
 st.set_page_config(page_title="Agentic ELN", layout="wide")
 st.title("Agentic ELN — IP-safe R&D Lab Notebook")
-st.caption(
-    ("Cloud LLM: Claude (key detected)" if has_cloud() else "Local mode (no API key — report falls back to template)")
-)
+st.caption(llm_banner())
 
 tab_chat, tab_log, tab_inv, tab_safety, tab_audit, tab_hist = st.tabs(
     ["Assistant", "Log experiment", "Inventory", "Safety check", "IP Audit log", "History"]
@@ -30,10 +37,7 @@ tab_chat, tab_log, tab_inv, tab_safety, tab_audit, tab_hist = st.tabs(
 
 with tab_chat:
     st.subheader("Lab assistant")
-    st.caption(
-        f"Cloud LLM: {get_model()}" if has_cloud()
-        else "Local mode — deterministic answers (no API key set)"
-    )
+    st.caption(llm_banner())
 
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
