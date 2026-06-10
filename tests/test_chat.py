@@ -92,3 +92,34 @@ def test_extract_reagents_ip_sensitive_and_dedup():
 
 def test_extract_reagents_none():
     assert extract_reagents("no chemicals here") == []
+
+
+from eln.chat import safe_tools
+
+
+def test_scrub_obj_removes_sensitive_names_recursively():
+    s = Sanitizer()
+    sensitive = next(iter(s.alias_map))
+    payload = {"names": [sensitive, "Toluene"], "nested": {"note": f"used {sensitive}"}}
+    clean = safe_tools.scrub_obj(payload, s)
+    flat = repr(clean)
+    assert sensitive not in flat
+    assert "Toluene" in flat  # non-sensitive names pass through
+
+
+def test_unalias_translates_back_for_local_execution():
+    s = Sanitizer()
+    sensitive, alias = next(iter(s.alias_map.items()))
+    assert safe_tools.unalias(f"check {alias} please", s) == f"check {sensitive} please"
+
+
+def test_safe_check_safety_accepts_aliases_and_returns_no_real_names(tmp_path, monkeypatch):
+    import eln.sanitizer as sanitizer_mod
+    monkeypatch.setattr(sanitizer_mod, "AUDIT_LOG", tmp_path / "audit.jsonl")
+    s = Sanitizer()
+    sensitive, alias = next(iter(s.alias_map.items()))
+    result = safe_tools.run_check_safety([alias, "Toluene"])
+    assert sensitive not in repr(result)  # outbound payload is scrubbed
+    # the underlying check really resolved the real reagent (it is in inventory,
+    # its CAS is internal so it lands in unknowns — as the alias, not the name)
+    assert any(alias in u for u in result["unknowns"]) or result["hazards"]
