@@ -17,6 +17,13 @@ _llm = get_llm()
 
 
 def ehs_agent() -> Agent:
+    """Conversational EHS agent — the seam for the upcoming chat interface.
+
+    IP-SAFE REQUIREMENT: this agent is not wired into the report flow yet.
+    Whenever a chat surface routes user text through it with a cloud LLM,
+    reagent names MUST pass through the Sanitizer first (as the report path
+    already does). Do not wire this agent to user input without that step.
+    """
     return Agent(
         role="EHS / Safety Officer",
         goal="Flag hazards, incompatibilities and the correct mixing order before any bench work.",

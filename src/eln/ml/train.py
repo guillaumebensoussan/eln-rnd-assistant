@@ -11,11 +11,9 @@ Deterministic (fixed random_state) for reproducibility.
 
 from __future__ import annotations
 
-import json
 from pathlib import Path
 
 import joblib
-import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor

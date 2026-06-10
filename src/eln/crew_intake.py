@@ -10,7 +10,7 @@ from __future__ import annotations
 from crewai import Agent
 
 from .llm import get_llm
-from .tools import parse_experiment_tool, predict_outcome_tool, search_history_tool
+from .tools import parse_experiment_tool, search_history_tool
 
 _llm = get_llm()
 
