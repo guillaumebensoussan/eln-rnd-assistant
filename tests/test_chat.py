@@ -50,3 +50,45 @@ def test_unknown_provider_falls_back_to_prefix_convention(monkeypatch):
     monkeypatch.setenv("ELN_MODEL", "mistral/mistral-large")
     monkeypatch.delenv("MISTRAL_API_KEY", raising=False)
     assert llm.has_cloud() is False
+
+
+from eln.chat.router import classify_intent, extract_reagents
+
+
+def test_intent_safety():
+    assert classify_intent("Is it safe to mix bleach with ammonia?") == "safety"
+
+
+def test_intent_predict():
+    assert classify_intent("What yield should I expect at 110C?") == "predict"
+
+
+def test_intent_history():
+    assert classify_intent("Did we run a similar coupling before?") == "history"
+
+
+def test_intent_inventory():
+    assert classify_intent("How much toluene is left in stock?") == "inventory"
+
+
+def test_intent_unknown():
+    assert classify_intent("Hello there!") == "unknown"
+
+
+def test_intent_safety_wins_over_predict_on_tie():
+    # one keyword each -> priority order puts safety first
+    assert classify_intent("Is this mix safe and what yield?") == "safety"
+
+
+def test_extract_reagents_multiword_and_case():
+    found = extract_reagents("mix HYDROCHLORIC ACID with sodium hydroxide slowly")
+    assert found == ["Hydrochloric acid", "Sodium hydroxide"]
+
+
+def test_extract_reagents_ip_sensitive_and_dedup():
+    found = extract_reagents("IntermediateX-171 then more IntermediateX-171 in Toluene")
+    assert found == ["IntermediateX-171", "Toluene"]
+
+
+def test_extract_reagents_none():
+    assert extract_reagents("no chemicals here") == []
