@@ -44,6 +44,15 @@ class Sanitizer:
 
         return self._pattern.sub(repl, text), redacted
 
+    def unscrub(self, text: str) -> str:
+        """Inverse mapping (alias -> real name) for local display only.
+
+        The result must NEVER be sent to the cloud.
+        """
+        for name, alias in self.alias_map.items():
+            text = text.replace(alias, name)
+        return text
+
 
 def audit(operation: str, sent_to_cloud: str, redacted: list[str], stayed_local: list[str]) -> None:
     """Append-only audit log: evidence of what left the machine."""

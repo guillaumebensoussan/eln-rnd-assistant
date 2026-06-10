@@ -21,7 +21,7 @@ The Flow (`src/eln/flow.py`) chains the steps **deterministically**, **validates
 `dataset_contract.json` and the required features before modelling, **logs** every step and
 **fails cleanly** (FLOW HALTED) if validation breaks.
 
-\* The report uses Claude if `ANTHROPIC_API_KEY` is set; otherwise it falls back to a local template.
+\* The report uses the LLM configured via `ELN_MODEL` (defaults to Claude) if a key is set; otherwise it falls back to a local template.
 
 ## Stack
 
@@ -33,7 +33,7 @@ The Flow (`src/eln/flow.py`) chains the steps **deterministically**, **validates
 | PubChem + local rule engine | SDS hazards (GHS) + curated reactivity rules → compatibility, mixing order, IP-safe |
 | Claude API | Complex reasoning (report) — sanitised context only |
 | Pandas | Dataset, inventory, stock deductions |
-| Streamlit | Lab UI: entry, inventory dashboard, audit log, history |
+| Streamlit | Lab UI: entry, inventory dashboard, audit log, history, assistant chat |
 | uv / Git+GitHub | Environment + versioning (Pull Request workflow) |
 
 ## Safety check (SDS / compatibility)
@@ -53,12 +53,34 @@ Run it from the **Safety check** tab, or programmatically:
 PYTHONPATH=src uv run python -c "from eln.safety import check_safety; r=check_safety(['Hydrochloric acid','Sodium hydroxide']); print(r.severity, r.incompatibilities)"
 ```
 
+## Chat assistant
+
+The **Assistant** tab is a multi-turn chat over all ELN capabilities
+(safety, prediction, history, inventory).
+
+- **With a cloud key**: a CrewAI orchestrator (plus the EHS agent) answers,
+  using a sanitised tool belt — the cloud LLM only ever sees aliases
+  (`REAGENT_A1`), tool calls run locally on real names, results are scrubbed
+  before returning, and every turn lands in the IP audit log.
+- **Without a key**: a deterministic keyword router answers from local
+  engines and templates. Nothing leaves the machine.
+
+### Choosing the LLM provider
+
+Set `ELN_MODEL` in `.env` (LiteLLM format) with the matching key:
+
+| Provider | ELN_MODEL | Key |
+|---|---|---|
+| Anthropic (default) | `anthropic/claude-sonnet-4-5` | `ANTHROPIC_API_KEY` |
+| Google | `gemini/gemini-2.5-flash` | `GEMINI_API_KEY` |
+| OpenAI | `openai/gpt-4o-mini` | `OPENAI_API_KEY` |
+
 ## Installation
 
 ```bash
 uv sync
 ollama pull nomic-embed-text   # optional; otherwise Chroma's built-in local embedder
-cp .env.example .env           # add ANTHROPIC_API_KEY (optional)
+cp .env.example .env           # add ANTHROPIC_API_KEY (or GEMINI_API_KEY / OPENAI_API_KEY) and ELN_MODEL (optional)
 ```
 
 ## Usage
