@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+.venv*/
+venv/
+env/
+
+# Secrets — never commit API keys
+.env
+*.env
+chem_rag_pipeline/.env
+
+# Generated outputs
+lab_team/reports/
+results/
+
+# Database (runtime state)
+*.db
+*.sqlite
+
+# IDE
+.vscode/
+.idea/
+
+# Claude Code session data
+.claude/
+
+# OS
+.DS_Store
+Thumbs.db
