@@ -21,6 +21,13 @@ _KEY_FOR_PREFIX = {
 # Providers that run on this machine: no API key, nothing leaves the workstation.
 _LOCAL_PREFIXES = ("ollama",)
 
+# Ollama defaults to a 4096-token context; the crew system prompts + tool
+# descriptions overflow it and the model silently stalls. Raise num_ctx via
+# extra_body — the OpenAI-compatible client forwards it verbatim in the JSON
+# body and Ollama's /v1 endpoint reads options.num_ctx. (Carried over from
+# Eyal's lab_team validation; see BUILD_STATUS.md bug #2.)
+_OLLAMA_EXTRA = {"extra_body": {"options": {"num_ctx": 16384}}}
+
 
 def get_model() -> str:
     return os.environ.get("ELN_MODEL", DEFAULT_MODEL)
@@ -54,5 +61,6 @@ def get_llm():
     from crewai import LLM
 
     if is_local():
-        return LLM(model=get_model(), base_url=OLLAMA_BASE_URL, temperature=0.2)
+        return LLM(model=get_model(), base_url=OLLAMA_BASE_URL, temperature=0.2,
+                   additional_params=_OLLAMA_EXTRA)
     return LLM(model=get_model(), temperature=0.2)
