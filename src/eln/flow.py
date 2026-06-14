@@ -40,6 +40,7 @@ class ELNState(BaseModel):
     rag_context: str = ""
     prediction: dict = {}
     report: str = ""
+    report_path: str = ""
     reagents: list[str] = []
     safety: dict = {}
     errors: list[str] = []
@@ -130,6 +131,19 @@ class ELNFlow(Flow[ELNState]):
                 "⛔ SAFETY ALERT — critical reagent incompatibility detected. "
                 "Review the Safety check before proceeding.\n\n" + self.state.report
             )
+
+        log.info("[Crew2:Report] writing Word document")
+        try:
+            from .reports import experiment_report
+            path = experiment_report(
+                record=self.state.record,
+                prediction=self.state.prediction,
+                report_text=self.state.report,
+                safety=self.state.safety,
+            )
+            self.state.report_path = str(path)
+        except Exception as exc:  # reporting is a nicety; never fail the Flow on it
+            log.warning("[Crew2:Report] document generation skipped: %s", exc)
         return self.state
 
 
@@ -145,6 +159,7 @@ def run(text: str, question: str = "", reagents: list[str] | None = None) -> ELN
         rag_context=s.rag_context,
         prediction=dict(s.prediction),
         report=s.report,
+        report_path=s.report_path,
         errors=list(s.errors),
         reagents=list(s.reagents),
         safety=dict(s.safety),

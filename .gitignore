@@ -15,5 +15,8 @@ wheels/
 # Regenerable vector store (binary)
 artifacts/chroma/
 
+# Generated office reports (.docx/.xlsx/.png)
+artifacts/reports/
+
 # Playwright MCP scratch
 .playwright-mcp/

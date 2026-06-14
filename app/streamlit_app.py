@@ -96,6 +96,14 @@ with tab_log:
                 st.metric("Predicted QC pass", str(state.prediction.get("predicted_qc_pass", "n/a")))
             st.markdown("**Report**")
             st.markdown(state.report)
+            if state.report_path and Path(state.report_path).exists():
+                with open(state.report_path, "rb") as fh:
+                    st.download_button(
+                        "⬇️ Download Word report (.docx)",
+                        data=fh.read(),
+                        file_name=Path(state.report_path).name,
+                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    )
 
 with tab_inv:
     st.subheader("Reagent inventory")
