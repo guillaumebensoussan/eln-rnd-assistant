@@ -8,6 +8,7 @@ openai/gpt-4o-mini, ollama/gemma4:latest (local, no API key needed).
 from __future__ import annotations
 
 import os
+import urllib.request
 
 DEFAULT_MODEL = "anthropic/claude-sonnet-4-5"
 OLLAMA_BASE_URL = "http://localhost:11434"
@@ -47,10 +48,19 @@ def required_key_name() -> str:
     return _KEY_FOR_PREFIX.get(_prefix(), f"{_prefix().upper()}_API_KEY")
 
 
-def has_cloud() -> bool:
-    """True when an LLM is usable: local server configured, or provider key present."""
-    if is_local():
+def _ollama_up() -> bool:
+    """True when the local Ollama server answers (short timeout, no retry)."""
+    try:
+        urllib.request.urlopen(OLLAMA_BASE_URL, timeout=0.5)
         return True
+    except OSError:
+        return False
+
+
+def has_cloud() -> bool:
+    """True when an LLM is usable: local server running, or provider key present."""
+    if is_local():
+        return _ollama_up()
     return bool(os.environ.get(required_key_name()))
 
 
