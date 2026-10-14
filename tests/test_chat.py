@@ -56,7 +56,14 @@ def test_ollama_model_needs_no_api_key(monkeypatch):
     monkeypatch.setenv("ELN_MODEL", "ollama/gemma4:latest")
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("OLLAMA_API_KEY", raising=False)
+    monkeypatch.setattr(llm, "_ollama_up", lambda: True)
     assert llm.has_cloud() is True
+
+
+def test_ollama_down_degrades_gracefully(monkeypatch):
+    monkeypatch.setenv("ELN_MODEL", "ollama/gemma4:latest")
+    monkeypatch.setattr(llm, "_ollama_up", lambda: False)
+    assert llm.has_cloud() is False
 
 
 def test_ollama_is_flagged_as_local(monkeypatch):

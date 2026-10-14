@@ -9,7 +9,7 @@
 **Tech Stack:** Python 3.13, uv, CrewAI (LiteLLM), ChromaDB, pandas, Streamlit, pytest.
 
 **Conventions (apply to every task):**
-- Repo root: `/Users/guilly/AI root/eln-rnd-assistant` (quote the path — it contains a space).
+- Repo root: all commands and paths are relative to the repository root.
 - Everything in English: code, comments, docstrings, UI strings. Zero French.
 - Test command (Chroma store must be purged first or stale state breaks RAG tests):
   `rm -rf artifacts/chroma && PYTHONPATH=src uv run pytest -q`
@@ -62,7 +62,7 @@ def test_sanitizer_unscrub_handles_text_without_aliases():
 
 - [ ] **Step 2: Run the test to verify it fails**
 
-Run: `cd "/Users/guilly/AI root/eln-rnd-assistant" && PYTHONPATH=src uv run pytest tests/test_chat.py -q`
+Run: `PYTHONPATH=src uv run pytest tests/test_chat.py -q`
 Expected: FAIL with `AttributeError: 'Sanitizer' object has no attribute 'unscrub'`
 
 - [ ] **Step 3: Implement `unscrub`**
